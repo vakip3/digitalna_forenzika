@@ -30,5 +30,26 @@ stego_image_YCC = preprocess.YCrCb(cv2.cvtColor(stego_image_f32, cv2.COLOR_BGR2Y
 message = reverse_stego.inverse_stego(stego_image_YCC)
 print(message)
 
+height, width = original.shape[:2]
+while height % 8:
+    height += 1
+while width % 8:
+    width += 1
+valid_dim = (width, height)
+padded_image = cv2.resize(original, valid_dim)
+cover_image_f32 = np.float32(padded_image)
+psnr = cv2.PSNR(stego_image, padded_image)
+print(psnr)
+
+
+def mse(imageA, imageB):
+    err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
+    err /= float(imageA.shape[0] * imageA.shape[1])
+    return err
+
+
+mse_err = mse(stego_image, padded_image)
+print(mse_err)
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()
