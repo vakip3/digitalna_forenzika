@@ -6,6 +6,10 @@ import zigzag_matrix_scan as zz
 import create_stego_image as src
 import image_preprocessing as preprocess
 import dct as dct
+import multiprocessing
+from joblib import Parallel, delayed
+num_cores = multiprocessing.cpu_count()
+
 
 stego_image = cv2.imread(src.stego_file, flags=cv2.IMREAD_COLOR)
 stego_image_f32 = np.float32(stego_image)
@@ -24,7 +28,7 @@ def read_message_from_stego(dct_blocks):
 
 def inverse_stego(image):
     #podaci su u luminance sloju, pa samo njega obradjujem
-    dct_blocks = [dct.dct2(block) for block in image.channels[0]]
+    dct_blocks = Parallel(n_jobs=num_cores)(delayed(dct.dct2)(block) for block in image.channels[0])
 
     #kvantizacija blokova
     dct_quants = [np.around(np.divide(item, preprocess.luminance_quant_table)) for item in dct_blocks]
