@@ -90,7 +90,7 @@ def stego(cover_img, message):
 
         # inverzni dct
 
-        idct_blocks = Parallel(n_jobs=num_cores)(delayed(dct.idct2)(block) for block in cover_image_YCC.channels[channel])
+        idct_blocks = Parallel(n_jobs=num_cores)(delayed(dct.idct2)(block) for block in dct_dequants)
 
         # spajanje blokova u sliku
         stego_image[:, :, channel] = np.asarray(preprocess.connect_8x8_blocks(cover_image_YCC.width, idct_blocks))
