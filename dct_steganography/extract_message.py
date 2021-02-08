@@ -38,7 +38,6 @@ def inverse_stego(image):
     #odredjivanje duzine poruke
     data_len = int(data_from_coeff.read('uint:32') / 8)
 
-    # Extract secret message from DCT coefficients
     extracted_data = bytes()
 
     for _ in range(data_len):
